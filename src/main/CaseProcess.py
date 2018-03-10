@@ -16,8 +16,8 @@ class CaseInfo(object):
     训练用的各个历史信息
     '''
     CPU=0;# cpu数
-    MEM=0;# 内存存储量 单位Mb,输入时转换
-    HAD=0;# 硬盘存储量 单位Gb
+    MEM=0;# 内存存储量 单位Gb
+    HDD=0;# 硬盘存储量 单位Gb
     
     opt_target='';# 优化目标，值为CPU和MEM
     
@@ -46,7 +46,7 @@ class CaseInfo(object):
     def set_case_info(self,origin_case_info,predict_time_grain):
         '''
         更改 案例属性信息
-        info[0]=CPU MEM HAD
+        info[0]=CPU MEM HDD
         info[2]=vm_type_size
         info[3:(3+vm_type_size)]=vm_types
         info[4+vm_type_size]=opt_target;
@@ -57,12 +57,12 @@ class CaseInfo(object):
             len(origin_case_info) < 2:
             raise ValueError('Error origin_case_info=',origin_case_info);
         
-        # 处理 CPU MEM HAD
+        # 处理 CPU MEM HDD
         tmp = origin_case_info[0].replace('\r\n','');
         tmps = tmp.split(' ');
         self.CPU=int(tmps[0]);
         self.MEM=int(tmps[1]);
-        self.HAD=int(tmps[2]);
+        self.HDD=int(tmps[2]);
         
         # 处理虚拟机类型
         tsize = int(origin_case_info[2].replace('\r\n',''));
