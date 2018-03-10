@@ -13,7 +13,7 @@ case = 1;
 base_path=r'/home/zwp/work/Dataset';
 case_path = base_path+r'/huawei_ecs/case%d'%(case);
 case_info_path  = case_path+r'/input_5flavors_cpu_7days.txt';
-train_his_data_path = case_path+r'/TrainData_2015.1.1_2015.2.19.txt';
+train_his_data_path = case_path+r'/data_2015_2.txt';
 result_out_path=case_path+r'/result_out.txt';
 
 

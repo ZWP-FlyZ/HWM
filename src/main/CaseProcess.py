@@ -4,8 +4,9 @@ Created on 2018年3月10日
 
 @author: zwp
 '''
-
+from datetime import timedelta;
 from datetime import datetime;
+
 import ParamInfo; 
 
 
@@ -31,7 +32,7 @@ class CaseInfo(object):
     his_data={};
                 
 
-    def __init__(self, origin_case_info,origin_train_data,predict_time_grain=ParamInfo.TIME_GRAIN_HOUR):
+    def __init__(self, origin_case_info,origin_train_data,predict_time_grain=ParamInfo.TIME_GRAIN_DAY):
         '''
         origin_data  predictor中的input_lines数组
         origin_train_data predictor中的ecs_lines数组
@@ -106,6 +107,60 @@ class CaseInfo(object):
             point[gt]=cot;
         self.his_data = hisdata;
 
+    def add_his_data(self,origin_train_data):
+        '''
+        在原时间粒度下，添加历史数据信息
+        '''
+        if (origin_train_data is None) or \
+            len(origin_train_data) ==0 :
+            raise ValueError('Error origin_train_data=',origin_train_data);
+        hisdata=self.his_data;
+        for line in origin_train_data:
+            line = line.replace('\r\n','');
+            _,vmtype,time=line.split('\t');
+            if not isContainKey(hisdata, vmtype):
+                hisdata[vmtype]={};
+            gt = get_grain_time(time,self.time_grain);
+            point = hisdata[vmtype];
+            if not isContainKey(point,gt):
+                point[gt]=0;
+            cot = point[gt]+1;
+            point[gt]=cot;
+        self.his_data = hisdata;
+     
+    def get_his_data_by_vmtype(self,vmtype):
+        '''
+        返回一个从第一个数据时间到预测开始前的数据统计列表
+        [[时间标签],[值]]
+        '''
+        tdict = self.his_data[vmtype];
+        tkeys = tdict.keys();
+        tkeys.sort();
+        result = {'time':[], # 时间标签
+                  'value':[]};# 统计值
+        hrs = 1;
+        if self.time_grain == ParamInfo.TIME_GRAIN_DAY:
+            hrs = 24;
+        td = timedelta(hours=hrs);
+        st = datetime.strptime(tkeys[0],'%Y-%m-%d %H:%M:%S');
+        et = datetime.strptime(self.data_range[0],'%Y-%m-%d %H:%M:%S');
+
+        while st<et:
+            timestr = st.strftime('%Y-%m-%d %H:%M:%S');
+            result['time'].append(timestr);
+            if timestr in tkeys:
+                result['value'].append(tdict[timestr]);
+            else:
+                result['value'].append(0);
+            st = st+td;
+            
+        return result;    
+        
+        
+        
+        
+        
+        pass;          
 
 ################### class CaseInfo end #############################
 

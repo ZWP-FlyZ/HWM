@@ -1,6 +1,7 @@
 
 
 import CaseProcess;
+import ParamInfo;
 
 def predict_vm(ecs_lines, input_lines):
     # Do your work from here#
@@ -12,15 +13,11 @@ def predict_vm(ecs_lines, input_lines):
         print 'input file information is none'
         return result
 
-    for item in ecs_lines:
-        item=item.replace('\r\n','');
-        values = item.split("\t")
-        print(values);
-        uuid = values[0]
-        flavorName = values[1]
-        createTime = values[2]
         
-    case = CaseProcess.CaseInfo(input_lines,ecs_lines,1);
+    case = CaseProcess.CaseInfo(input_lines,ecs_lines);
     
-    print case;
+    keys = case.his_data['flavor2'].keys();
+    print(keys.sort());
+    print(keys);
+    print(case.get_his_data_by_vmtype('flavor2'));
     return result
