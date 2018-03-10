@@ -75,9 +75,10 @@ class CaseInfo(object):
         # 处理优化目标    
         self.opt_target = origin_case_info[4+tsize].replace('\r\n','');
         # 处理时间
-        _st = origin_case_info[6+tsize].replace('\r\n','');
-        _et = origin_case_info[7+tsize].replace('\r\n','');
-        st = datetime.strptime(_st,'%Y-%m-%d %H:%M:%S');
+        _st = origin_case_info[6+tsize].replace('\n','');# bug here ?
+        _et = origin_case_info[7+tsize].replace('\n','');# bug here ?
+        print _st,_et;
+        st = datetime.strptime(_st,"%Y-%m-%d %H:%M:%S");
         et = datetime.strptime(_et,'%Y-%m-%d %H:%M:%S');
         td = et-st;
         if predict_time_grain == ParamInfo.TIME_GRAIN_DAY:

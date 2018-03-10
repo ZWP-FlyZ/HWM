@@ -2,6 +2,7 @@
 import sys
 import os
 import predictor
+import platform;
 
 '''
     本地测试用启动入口代码
@@ -10,7 +11,13 @@ import predictor
 
 case = 1;
 
-base_path=r'/home/zwp/work/Dataset';
+
+sysstr = platform.system();
+if sysstr =="Windows":
+    base_path=r'E:/Dataset';
+elif sysstr == "Linux":
+    base_path=r'/home/zwp/work/Dataset';
+
 case_path = base_path+r'/huawei_ecs/case%d'%(case);
 case_info_path  = case_path+r'/input_5flavors_cpu_7days.txt';
 train_his_data_path = case_path+r'/data_2015_2.txt';
