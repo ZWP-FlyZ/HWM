@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 
 import CaseProcess;
 import ParamInfo;
@@ -28,16 +28,16 @@ def predict_vm(ecs_lines, input_lines):
     print(group.put_vm(0, 'flavor13'));
     print(group.put_vm(0, 'flavor13'));
     print(group.put_vm(0, 'flavor13'));
-    print(group.PM_status);
-    group.new_physic_machine();
-    group.new_physic_machine();
-    group.new_physic_machine();
-    group.new_physic_machine();
-    print(group.put_vm(2, 'flavor15'));
-    print(group.put_vm(2, 'flavor15'));
-    print(group.put_vm(2, 'flavor15'));
-    print(group.put_vm(2, 'flavor15'));    
-    print(group.put_vm(2, 'flavor15'));
+#     print(group.PM_status);
+#     group.new_physic_machine();
+#     group.new_physic_machine();
+#     group.new_physic_machine();
+#     group.new_physic_machine();
+#     print(group.put_vm(2, 'flavor15'));
+#     print(group.put_vm(2, 'flavor15'));
+#     print(group.put_vm(2, 'flavor15'));
+#     print(group.put_vm(2, 'flavor15'));    
+#     print(group.put_vm(2, 'flavor15'));
     
     
     
@@ -53,5 +53,44 @@ def predict_vm(ecs_lines, input_lines):
     
     print(picker);
     
+    vm_size,vm = picker.to_origin_desc();
     
+    pm_size,pm = group.to_description();
+    
+    result = result_to_list(vm_size, vm, pm_size, pm);
+    print(result);
     return result
+
+
+
+def result_to_list(vm_size,vm,pm_size,pm):
+    '''
+    由预测和分配生成结果
+    vm：{vm_type:cot...}
+    pm[{vm_type:cot,vm_type2:cot2...}...]
+    '''
+    end_str='';
+    result=[];
+    result.append(str(vm_size)+end_str);
+    for index in vm.keys():
+        item = vm[index];
+        tmp = index +' '+str(item)+end_str;
+        result.append(tmp);
+        
+    result.append(end_str);
+    
+    result.append(str(pm_size)+end_str);
+    for pm_id in range(len(pm)):
+        tmp = str(pm_id);
+        pmone = pm[pm_id];
+        for index in pmone.keys():
+            item = pmone[index];
+            tmp += ' '+index+' '+str(item);
+        tmp+=end_str;
+        result.append(tmp);
+    return result;
+    
+
+
+
+

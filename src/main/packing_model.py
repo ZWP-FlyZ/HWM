@@ -123,6 +123,7 @@ class VmPicker():
     origin_data = None;
     # 原始输入描述
     origin_desc_table = {};
+    origin_vm_size = 0;
     
     # 虚拟机总数，非零虚拟机总数
     vm_size = 0;
@@ -143,7 +144,7 @@ class VmPicker():
         self.init_picker(predict_result);
         self.vm_size,self.origin_desc_table = \
             self.to_description();
-        
+        self.origin_vm_size = self.vm_size;
         pass;
     
     def init_picker(self,predict_result):
@@ -212,6 +213,9 @@ class VmPicker():
         windex,cindex = self.type2index(vm_type);
         return self.get_vm_by_index(windex,cindex);
     
+    def to_origin_desc(self):
+        return self.origin_vm_size,self.origin_desc_table;
+        pass;
     def to_description(self):
         '''
         统计当前VM一个描述结果
