@@ -13,14 +13,28 @@ Created on 2018年3月10日
 
 import ParamInfo;
 
+
+def predict_model1():
+    '''
+    预测方案一
+    '''
+    pass;
+
+
 def predict_all(caseInfo):
     '''
     输入为CaseInfo对象，
     返回一个结果对象，结构为{vm_type:[v1,v2,v3....]};
     数组长度为caseInfo,中date_range_size,代表各个时间粒度内，
-    该虚拟机被请求数
+    该虚拟机被请求数,
+    注意：当前预测模型设置只适合各个虚拟机类型独立预测
     '''
-    pass;
+    result = {};
+    vm_types = caseInfo.vm_types;
+    for vmtype in vm_types:
+        result[vmtype] = predict_one(vmtype,caseInfo,predict_model1);
+    return result;   
+
 
 def predict_one(vm_type,# 虚拟机类型
                 caseInfo,# 案例信息对象
@@ -31,13 +45,10 @@ def predict_one(vm_type,# 虚拟机类型
     一个[v1,v2,v3....]预测结果数组
     '''
     
-    pass;
+    #  test here
+    return [1,2,3,4];
 
-def predict_model1():
-    '''
-    预测方案一
-    '''
-    pass;
+
 
 
 

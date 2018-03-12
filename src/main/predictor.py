@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import CaseProcess;
-import ParamInfo;
 import packing_model;
+import prediction_model;
 
 
 def predict_vm(ecs_lines, input_lines):
@@ -14,48 +14,12 @@ def predict_vm(ecs_lines, input_lines):
     if input_lines is None:
         print 'input file information is none'
         return result
-
-        
-    case = CaseProcess.CaseInfo(input_lines,ecs_lines);
+  
+    caseInfo = CaseProcess.CaseInfo(input_lines,ecs_lines);
     
-    keys = case.his_data['flavor2'].keys();
-    print(keys.sort());
-    print(keys);
-    print(case.get_his_data_by_vmtype('flavor2'));
+    predict_result = prediction_model.predict_all(caseInfo);
     
-    group = packing_model.MachineGroup(case);
-    print(group.put_vm(0, 'flavor13'));
-    print(group.put_vm(0, 'flavor13'));
-    print(group.put_vm(0, 'flavor13'));
-    print(group.put_vm(0, 'flavor13'));
-#     print(group.PM_status);
-#     group.new_physic_machine();
-#     group.new_physic_machine();
-#     group.new_physic_machine();
-#     group.new_physic_machine();
-#     print(group.put_vm(2, 'flavor15'));
-#     print(group.put_vm(2, 'flavor15'));
-#     print(group.put_vm(2, 'flavor15'));
-#     print(group.put_vm(2, 'flavor15'));    
-#     print(group.put_vm(2, 'flavor15'));
-    
-    
-    
-    predict_result = {'flavor2':[1,2,3,4],
-                      'flavor3':[0,0,0,0],
-                      'flavor7':[1,0,0,4]}
-    
-    picker = packing_model.VmPicker(predict_result);
-    
-    print(picker.get_vm_by_type('flavor3'));
-    print(picker.get_vm_by_type('flavor2'));
-    print(picker.get_vm_by_type('flavor1'));
-    
-    print(picker);
-    
-    vm_size,vm = picker.to_origin_desc();
-    
-    pm_size,pm = group.to_description();
+    vm_size,vm,pm_size,pm = packing_model.pack_all(caseInfo, predict_result);
     
     result = result_to_list(vm_size, vm, pm_size, pm);
     print(result);
@@ -83,6 +47,8 @@ def result_to_list(vm_size,vm,pm_size,pm):
     for pm_id in range(len(pm)):
         tmp = str(pm_id);
         pmone = pm[pm_id];
+        if len(pmone.keys())==0:
+            continue;
         for index in pmone.keys():
             item = pmone[index];
             tmp += ' '+index+' '+str(item);

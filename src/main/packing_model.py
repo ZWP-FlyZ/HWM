@@ -9,10 +9,36 @@ import math;
 '''
     装配模型，输入为预测模型输出的预测对象，
     在转配模型中可维护一个历史物理机集群状态对象，
-    可为另一种转配理解。
+    一个预测输入结果获取的picker对象，
+    最终分配结果在Group对象中
 '''
 
 import ParamInfo;
+
+def pack_model1(vmPicker,machineGroup):
+    '''
+    具体装配方案一
+    '''
+    pass;
+
+
+# 
+pack_function = pack_model1;
+
+def pack_all(caseInfo,predict_result):
+    '''
+    装配模块对外接口，
+    caseInfo 为案例对象
+    predict_result 为预测模块结果
+    返回vm_size,vm,pm_size,pm 用于生成结果文件
+    '''
+    group = MachineGroup(caseInfo);
+    picker = VmPicker(predict_result);
+    pack_function(picker,group);
+    vm_size,vm = picker.to_origin_desc();
+    pm_size,pm = group.to_description();
+    return vm_size,vm,pm_size,pm;
+
 
 class MachineGroup():
     '''
