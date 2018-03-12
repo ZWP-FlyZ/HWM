@@ -24,8 +24,10 @@ if __name__ == '__main__':
     
     b = [1,2,3,4];
     print b.index(1);
-    print b.index(5);
     
-    
+    for index in range(3,-1,-1):
+        print(index);
+        print('v',b[index]);
+    print index;
     pass;
 

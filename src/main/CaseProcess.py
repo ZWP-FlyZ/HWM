@@ -76,7 +76,7 @@ class CaseInfo(object):
         # 处理优化目标    
         self.opt_target = origin_case_info[4+tsize].replace('\r\n','');
         # 处理时间
-        linux = True;
+        linux = False;
         if linux: 
             end_str = '\r\n';
         else:

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import CaseProcess;
-import packing_model;
+from main import packing_processer;
 import prediction_model;
 
 
@@ -19,7 +19,7 @@ def predict_vm(ecs_lines, input_lines):
     
     predict_result = prediction_model.predict_all(caseInfo);
     
-    vm_size,vm,pm_size,pm = packing_model.pack_all(caseInfo, predict_result);
+    vm_size,vm,pm_size,pm = packing_processer.pack_all(caseInfo, predict_result);
     
     result = result_to_list(vm_size, vm, pm_size, pm);
     print(result);
