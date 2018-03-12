@@ -100,6 +100,12 @@ class MachineGroup():
             return (re_cpu,re_mem);
         return None; # 超分返回
 
+    def to_description(self):
+        '''
+        统计当前PM一个描述结果
+        返回当前pm_size PM
+        '''
+        return self.pm_size,self.PM;
 ################## end class MachineGroup ####################
 
 
@@ -115,6 +121,8 @@ class VmPicker():
     
     # 预测输入的原始数据
     origin_data = None;
+    # 原始输入描述
+    origin_desc_table = {};
     
     # 虚拟机总数，非零虚拟机总数
     vm_size = 0;
@@ -133,6 +141,9 @@ class VmPicker():
     def __init__(self,predict_result):
         self.origin_data = predict_result;
         self.init_picker(predict_result);
+        self.vm_size,self.origin_desc_table = \
+            self.to_description();
+        
         pass;
     
     def init_picker(self,predict_result):
@@ -165,13 +176,15 @@ class VmPicker():
         若原先有预测但当前数量为0,返回-1,拿取失败，
         正常情况 返回 该虚拟机类型剩余量
         '''
+
         re_vm = self.VM[windex][cindex];
-        if re_vm==-1:
+        if self.vm_size == -1 or re_vm==-1:
             return None;
-        elif re_vm == 0:
+        elif self.vm_size == 0 or re_vm == 0:
             return -1;
         else:
             re_vm-=1;
+            self.vm_size -=1;
         self.VM[windex][cindex] = re_vm;
         return re_vm;
         pass;
@@ -199,6 +212,24 @@ class VmPicker():
         windex,cindex = self.type2index(vm_type);
         return self.get_vm_by_index(windex,cindex);
     
+    def to_description(self):
+        '''
+        统计当前VM一个描述结果
+        返回当前vm_size vm_desc_table
+        '''
+        new_desc_table = {};
+        vmsum = 0;
+        flag = True;
+        for i in range(3):
+            for j in range(5):
+                tmp = self.VM[i][j];
+                if  tmp != -1:
+                    flag = False;
+                    vmsum += tmp;
+                    new_desc_table[self.index2type(i, j)]=tmp;
+        if flag :
+            vmsum = -1;
+        return vmsum,new_desc_table;
     pass;
 
 
