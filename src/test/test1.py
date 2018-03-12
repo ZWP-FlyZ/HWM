@@ -21,5 +21,11 @@ if __name__ == '__main__':
     print 'a' in a.keys();
     a['a']='b';
     print 'a' in a.keys();
+    
+    b = [1,2,3,4];
+    print b.index(1);
+    print b.index(5);
+    
+    
     pass;
 

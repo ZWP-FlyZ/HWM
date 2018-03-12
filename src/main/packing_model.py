@@ -4,6 +4,7 @@ Created on 2018年3月10日
 
 @author: zwp12
 '''
+import math;
 
 '''
     装配模型，输入为预测模型输出的预测对象，
@@ -98,6 +99,108 @@ class MachineGroup():
             pm[vm_type]+=1;
             return (re_cpu,re_mem);
         return None; # 超分返回
+
+################## end class MachineGroup ####################
+
+
+class VmPicker():
+    '''
+    输入预测模型的预测结果，
+    并维护一个权重与核心数级别的二维映射表，
+    调用任何get_xxx 方法会时Picker中的虚拟机数减少，
+    直到全部虚拟机被取完。
+    二维表中原值为-1,未被预测虚拟机，
+    大于等于0表示已被预测的虚拟机数量
+    '''
+    
+    # 预测输入的原始数据
+    origin_data = None;
+    
+    # 虚拟机总数，非零虚拟机总数
+    vm_size = 0;
+    
+    # 预测虚拟机的在M/U权重与核心数级别
+    # 上展开 shape=[3,5]
+    #   CPU=1,2,4,8,16
+    VM = [[-1,-1,-1,-1,-1], # weight_1.0
+          [-1,-1,-1,-1,-1], # weight_2.0
+          [-1,-1,-1,-1,-1]  # weight_4.0
+        ];
+    
+    # 虚拟机类型名数组
+    vm_types = ParamInfo.VM_TYPE_DIRT;
+    
+    def __init__(self,predict_result):
+        self.origin_data = predict_result;
+        self.init_picker(predict_result);
+        pass;
+    
+    def init_picker(self,predict_result):
+        types = predict_result.keys();
+        for vmtype in types:
+            vsum = 0;
+            pre  =  predict_result[vmtype];
+            for i in range(len(pre)):
+                vsum+=pre[i];
+            windex,cindex = self.type2index(vmtype);
+            self.VM[windex][cindex] = vsum;
+        pass;
+    
+    
+    def type2index(self,vm_type):
+        tindex = self.vm_types.index(vm_type);
+        windex = tindex % 3;
+        cindex = int(tindex / 3);
+        return windex,cindex;
+
+    def index2type(self,windex,cindex):
+        if windex < 0 or cindex < 0:
+            raise ValueError('Error ',(windex,cindex));
+        return self.vm_types[cindex*3 + windex];
+    
+    def get_vm_by_index(self,windex,cindex):
+        '''
+        windex M/U权重的下标 cindex CPU数下标，
+        若原先并没有预测则返回None,拿取失败
+        若原先有预测但当前数量为0,返回-1,拿取失败，
+        正常情况 返回 该虚拟机类型剩余量
+        '''
+        re_vm = self.VM[windex][cindex];
+        if re_vm==-1:
+            return None;
+        elif re_vm == 0:
+            return -1;
+        else:
+            re_vm-=1;
+        self.VM[windex][cindex] = re_vm;
+        return re_vm;
+        pass;
+
+
+    def get_vm_by_wc(self,weight,cpu):
+        '''
+        通过虚拟机M/U权重和CPU数获取，
+        若原先并没有预测则返回None,拿取失败
+        若原先有预测但当前数量为0,返回-1,拿取失败，
+        正常情况 返回 该虚拟机类型剩余量
+        '''
+        windex = int(math.log(weight,2));
+        cindex = int(math.log(cpu,2));
+        return self.get_vm_by_index(windex,cindex);
+        pass;
+    
+    def get_vm_by_type(self,vm_type):
+        '''
+        通过虚拟机类型名获取，
+        若原先并没有预测则返回None,拿取失败
+        若原先有预测但当前数量为0,返回-1,拿取失败，
+        正常情况 返回 该虚拟机类型剩余量
+        '''
+        windex,cindex = self.type2index(vm_type);
+        return self.get_vm_by_index(windex,cindex);
+    
+    pass;
+
 
 
 

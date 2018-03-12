@@ -38,4 +38,20 @@ def predict_vm(ecs_lines, input_lines):
     print(group.put_vm(2, 'flavor15'));
     print(group.put_vm(2, 'flavor15'));    
     print(group.put_vm(2, 'flavor15'));
+    
+    
+    
+    predict_result = {'flavor2':[1,2,3,4],
+                      'flavor3':[0,0,0,0],
+                      'flavor7':[1,0,0,4]}
+    
+    picker = packing_model.VmPicker(predict_result);
+    
+    print(picker.get_vm_by_type('flavor3'));
+    print(picker.get_vm_by_type('flavor2'));
+    print(picker.get_vm_by_type('flavor1'));
+    
+    print(picker);
+    
+    
     return result
