@@ -19,9 +19,9 @@ def pack_model1(vmPicker,machineGroup,opt_target='CPU'):
     vm_orders = [[], # vm_type
                  []] # cot
     weightes = [1,2,4];
-    start=0;end=3;step=1;order=1;
+    start=0;end=3;step=1;order=0;
     if opt_target == 'MEM':
-        start=2;end=-1;step=-1;order=1;
+        start=2;end=-1;step=-1;order=0;
     for wi in range(start,end,step):
         tmp = vmPicker.get_vm_by_mu_weight(weightes[wi],order);
         if tmp != None:
@@ -35,10 +35,13 @@ def pack_model1(vmPicker,machineGroup,opt_target='CPU'):
         vm_cot = vm_orders[1][vm_index];
         pm_size = machineGroup.pm_size;
         for rept in range(vm_cot):
+            is_In = False;
             for pm_id in range(pm_size):
                 re_items = machineGroup.put_vm(pm_id,vm_type);
-                if re_items != None: continue;
-            if re_items == None: # 在现有的物理机中无法安排该虚拟机
+                if re_items != None:
+                    is_In=True;
+                    break;
+            if not is_In : # 在现有的物理机中无法安排该虚拟机
                 pm_size = machineGroup.new_physic_machine();
                 re_items = machineGroup.put_vm(pm_size-1,vm_type);
                 if re_items == None:
