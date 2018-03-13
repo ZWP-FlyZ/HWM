@@ -66,3 +66,40 @@ def predict_model2(his_data,# 某种类型的虚拟机的历史数据
         result.append(predict);
     return result;
 
+def predict_model3(his_data,# 某种类型的虚拟机的历史数据
+                   date_range_size):# 需要预测的长度
+
+    '''
+    预测方案一,使用MV 模型预测，
+    历史长度为n个粒度时间，使用倒数权重，
+    his_data:['time':[时间标签],'value':[值]]
+    '''
+    n =  10; # 历史长度
+    # 权重，从最近到最久，长度为n
+    ws = [];
+    ws_sum = 0.0;
+    for i in range(n):
+        # tmp = 1.0/(1.0+i);
+        tmp = math.exp(-1.0*i);
+        ws_sum += tmp;
+        ws.append(tmp);
+    for i in range(n):
+        ws[i] = ws[i]/ws_sum;
+    
+    chis_data = copy.deepcopy(his_data['value']);
+    result = [];
+    for rept in range(date_range_size):
+        cal_len = len(chis_data);
+        tmpn=0;
+        predict=0.0;
+        for i in range(cal_len-1,-1,-1):
+            predict+= chis_data[i] * ws[tmpn];
+            tmpn+=1;
+            if tmpn==n:break;
+        predict = int(math.ceil(predict));
+        chis_data.append(predict);
+        result.append(predict);
+    return result;
+
+
+

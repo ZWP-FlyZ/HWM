@@ -4,7 +4,6 @@ Created on 2018年3月10日
 
 @author: zwp12
 '''
-import math;
 
 '''
     预测模型，输入CaseInfo对象，
@@ -14,7 +13,7 @@ import math;
 
 import predict_model;
 
-predict_func = predict_model.predict_model2;
+predict_func = predict_model.predict_model3;
 
 def predict_all(caseInfo):
     '''
