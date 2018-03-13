@@ -4,6 +4,7 @@ Created on 2018年3月10日
 
 @author: zwp12
 '''
+from math import floor
 
 '''
     预测模型，输入CaseInfo对象，
@@ -40,7 +41,6 @@ def predict_model1(his_data,# 某种类型的虚拟机的历史数据
         chis_data.append(int(predict));
         result.append(int(predict));
     return result;
-
 
 
 def predict_all(caseInfo):
