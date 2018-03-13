@@ -1,4 +1,4 @@
 记录1：采用pre1和pack1 分数50.7 
 	问题1：最后一个案例出现 文件输出错误？->ParamInfo中VM_TYPE_DIRT 出现有个‘,’没加
-	问题2：有概率出现预测数和包装数不匹配问题？
+	问题2：有概率出现预测数和包装数不匹配问题？ 在packing_model1 中将break错写成continue 
 
