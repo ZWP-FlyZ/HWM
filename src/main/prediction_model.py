@@ -38,8 +38,9 @@ def predict_model1(his_data,# 某种类型的虚拟机的历史数据
             predict+= chis_data[i] * ws[tmpn];
             tmpn+=1;
             if tmpn==n:break;
-        chis_data.append(int(predict));
-        result.append(int(predict));
+        predict = int(floor(predict));
+        chis_data.append(predict);
+        result.append(predict);
     return result;
 
 

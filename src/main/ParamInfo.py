@@ -31,7 +31,7 @@ VM_PARAM = {
     'flavor15':[16,64,4.0]
     }
 VM_TYPE_DIRT =['flavor1','flavor2','flavor3','flavor4','flavor5',
-               'flavor6','flavor7','flavor8','flavor9','flavor10'
+               'flavor6','flavor7','flavor8','flavor9','flavor10',
                'flavor11','flavor12','flavor13','flavor14','flavor15'];
 # 预测时间粒度
 # 

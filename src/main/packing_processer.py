@@ -41,8 +41,8 @@ class MachineGroup():
     静态集群状态类
     '''
     
-    #物理机操作指针
-    ptr = 0;
+    #计数
+    empty = 0;
     
     
     # 集群中物理机参数
@@ -109,6 +109,7 @@ class MachineGroup():
         re_cpu = pmstatus['re_cpu']-vm_cpu;
         re_mem = pmstatus['re_mem']-vm_mem;
         if re_cpu>=0 and  re_mem>=0:
+            self.empty+=1;
             pmstatus['re_cpu'] = re_cpu;
             pmstatus['re_mem'] = re_mem;
             pmstatus['vm_size'] +=1;
@@ -128,7 +129,10 @@ class MachineGroup():
         统计当前PM一个描述结果
         返回当前pm_size PM
         '''
-        return self.pm_size,self.PM;
+        if self.empty != 0:
+            return self.pm_size,self.PM;
+        else:
+            return 0,self.PM;
     
     def to_usage_status(self):
         '''

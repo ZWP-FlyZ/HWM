@@ -132,7 +132,8 @@ class CaseInfo(object):
     def get_his_data_by_vmtype(self,vmtype):
         '''
         返回一个从第一个数据时间到预测开始前的数据统计列表
-        [[时间标签],[值]]
+        ['time':[时间标签],
+        'value':[值]]
         '''
         tdict = self.his_data[vmtype];
         tkeys = tdict.keys();
