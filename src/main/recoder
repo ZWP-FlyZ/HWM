@@ -11,5 +11,7 @@
 记录4：packing1与packing2 几乎不影响最终结果，建议先优化prediction
 
 
-
+记录5：采用pre2和pack2 分数83.19 
+	predict2:采用SMA 取前n项平均来预测第n+1项，当前n=7 
+	packing2:采用全局贪心，即按照资源面积从大到小排列
 

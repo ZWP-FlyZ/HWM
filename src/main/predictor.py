@@ -2,7 +2,7 @@
 
 import CaseProcess;
 import packing_processer;
-import prediction_model;
+import prediction_processer;
 
 
 def predict_vm(ecs_lines, input_lines):
@@ -17,7 +17,7 @@ def predict_vm(ecs_lines, input_lines):
   
     caseInfo = CaseProcess.CaseInfo(input_lines,ecs_lines);
     
-    predict_result = prediction_model.predict_all(caseInfo);
+    predict_result = prediction_processer.predict_all(caseInfo);
     vm_size,vm,pm_size,pm = packing_processer.pack_all(caseInfo, predict_result);
     
     result = result_to_list(vm_size, vm, pm_size, pm);
