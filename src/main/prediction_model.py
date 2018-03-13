@@ -4,7 +4,7 @@ Created on 2018年3月10日
 
 @author: zwp12
 '''
-from math import floor
+import math;
 
 '''
     预测模型，输入CaseInfo对象，
@@ -38,10 +38,40 @@ def predict_model1(his_data,# 某种类型的虚拟机的历史数据
             predict+= chis_data[i] * ws[tmpn];
             tmpn+=1;
             if tmpn==n:break;
-        predict = int(floor(predict));
+        predict = int(math.floor(predict));
         chis_data.append(predict);
         result.append(predict);
     return result;
+
+
+def predict_model2(his_data,# 某种类型的虚拟机的历史数据
+                   date_range_size):# 需要预测的长度
+
+    '''
+    预测方案一,使用SMV 模型预测，
+    历史长度为n个粒度时间，权重设定暂定，
+    his_data:['time':[时间标签],'value':[值]]
+    '''
+    n =  10; # 历史长度
+    # 权重，从最近到最久，长度为n
+ 
+    chis_data = copy.deepcopy(his_data['value']);
+    result = [];
+    for rept in range(date_range_size):
+        cal_len = len(chis_data);
+        tmpn=0;
+        predict=0.0;
+        for i in range(cal_len-1,-1,-1):
+            predict+= chis_data[i];
+            tmpn+=1;
+            if tmpn==n:break;
+        
+        predict = int(math.ceil(predict*1.0/tmpn));
+        chis_data.append(predict);
+        result.append(predict);
+    return result;
+
+
 
 
 def predict_all(caseInfo):
@@ -55,7 +85,7 @@ def predict_all(caseInfo):
     result = {};
     vm_types = caseInfo.vm_types;
     for vmtype in vm_types:
-        result[vmtype] = predict_one(vmtype,caseInfo,predict_model1);
+        result[vmtype] = predict_one(vmtype,caseInfo,predict_model2);
     return result;   
 
 

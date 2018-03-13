@@ -2,3 +2,14 @@
 	问题1：最后一个案例出现 文件输出错误？->ParamInfo中VM_TYPE_DIRT 出现有个‘,’没加
 	问题2：有概率出现预测数和包装数不匹配问题？ 在packing_model1 中将break错写成continue 
 
+记录2：采用pre1和pack1 分数76.7 (修复bug后)
+
+记录3：采用pre2和pack2 分数82.2 
+	predict2:采用SMA 取前n项平均来预测第n+1项，当前n=10 
+	packing2:采用全局贪心，即按照资源面积从大到小排列
+
+记录4：packing1与packing2 几乎不影响最终结果，建议先优化prediction
+
+
+
+

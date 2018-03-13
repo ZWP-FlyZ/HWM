@@ -18,7 +18,7 @@ import packing_model;
 
 
 # 选择在packing_model 中的装配方案
-pack_function = packing_model.pack_model1;
+pack_function = packing_model.pack_model2;
 
 def pack_all(caseInfo,predict_result):
     '''
