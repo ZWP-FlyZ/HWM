@@ -5,6 +5,8 @@ Created on 2018年3月10日
 @author: zwp
 '''
 
+import platform;
+
 # 所有虚拟机的参数
 # [CPU,MEM, W(M/C) ] [U数，M数，存储比核的权重]
 VM_PARAM = {
@@ -36,5 +38,19 @@ VM_TYPE_DIRT =['flavor1','flavor2','flavor3','flavor4','flavor5',
 TIME_GRAIN_HOUR = 0;
 TIME_GRAIN_DAY = 1;
 TIME_GRAIN_MORE_DAY = 2; 
+
+
+# 系统检查
+sysstr = platform.system();
+end_str = '';
+if(sysstr =="Windows"):
+    end_str = '\n';
+elif(sysstr == "Linux"):
+    end_str = '\r\n';
+
+            
+
+
+
 
 

@@ -11,14 +11,36 @@ Created on 2018年3月10日
     
 '''
 
-import ParamInfo;
+import copy;
 
+def predict_model1(his_data,# 某种类型的虚拟机的历史数据
+                   date_range_size):# 需要预测的长度
 
-def predict_model1():
     '''
-    预测方案一
+    预测方案一,使用MV 模型预测，
+    历史长度为n个粒度时间，权重设定暂定，
+    his_data:['time':[时间标签],'value':[值]]
     '''
-    pass;
+    n =  7; # 历史长度
+    # 权重，从最近到最久，长度为n
+    ws = [0.45,0.25, 
+          0.15,0.08,
+          0.04,0.02,
+          0.01]; 
+    chis_data = copy.deepcopy(his_data['value']);
+    result = [];
+    for rept in range(date_range_size):
+        cal_len = len(chis_data);
+        tmpn=0;
+        predict=0.0;
+        for i in range(cal_len-1,-1,-1):
+            predict+= chis_data[i] * ws[tmpn];
+            tmpn+=1;
+            if tmpn==n:break;
+        chis_data.append(int(predict));
+        result.append(int(predict));
+    return result;
+
 
 
 def predict_all(caseInfo):
@@ -40,13 +62,15 @@ def predict_one(vm_type,# 虚拟机类型
                 caseInfo,# 案例信息对象
                 prodict_function=None# 时间序列预测
                 ):
+    return prodict_function(caseInfo.get_his_data_by_vmtype(vm_type),
+                            caseInfo.date_range_size);
     '''
     训练并预测一种虚拟机的类型，返回为
     一个[v1,v2,v3....]预测结果数组
     '''
     
     #  test here
-    return [1,2,3,4];
+    # return [1,2,3,4];
 
 
 

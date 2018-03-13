@@ -9,8 +9,6 @@ from datetime import datetime;
 
 import ParamInfo; 
 
-
-
 class CaseInfo(object):
     '''
     Case的一些信息
@@ -76,13 +74,9 @@ class CaseInfo(object):
         # 处理优化目标    
         self.opt_target = origin_case_info[4+tsize].replace('\r\n','');
         # 处理时间
-        linux = False;
-        if linux: 
-            end_str = '\r\n';
-        else:
-            end_str = '\n';
-        _st = origin_case_info[6+tsize].replace(end_str,'');# bug here ?
-        _et = origin_case_info[7+tsize].replace(end_str,'');# bug here ?
+
+        _st = origin_case_info[6+tsize].replace(ParamInfo.end_str,'');# bug here ?
+        _et = origin_case_info[7+tsize].replace(ParamInfo.end_str,'');# bug here ?
         print _st,_et;
         st = datetime.strptime(_st,"%Y-%m-%d %H:%M:%S");
         et = datetime.strptime(_et,'%Y-%m-%d %H:%M:%S');
