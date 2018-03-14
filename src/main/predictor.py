@@ -18,6 +18,11 @@ def predict_vm(ecs_lines, input_lines):
     caseInfo = CaseProcess.CaseInfo(input_lines,ecs_lines);
     
     predict_result = prediction_processer.predict_all(caseInfo);
+#     predict_result={'flavor1':[1,2,3,4,5,6,7],
+#                     'flavor2':[0,0,0,0,0,0,0],
+#                     'flavor3':[10,2,10,4,10,6,10],
+#                     'flavor4':[1,0,0,1,0,0,1],
+#                     'flavor5':[1,0,3,0,5,0,7]}
     vm_size,vm,pm_size,pm = packing_processer.pack_all(caseInfo, predict_result);
     
     result = result_to_list(vm_size, vm, pm_size, pm);

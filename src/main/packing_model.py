@@ -4,6 +4,7 @@ Created on 2018年3月12日
 
 @author: zwp12
 '''
+from math import ceil
 
 def pack_model1(vmPicker,machineGroup,opt_target='CPU'):
     '''
@@ -95,7 +96,17 @@ def pack_model2(vmPicker,machineGroup,opt_target='CPU'):
 def pack_model3(vmPicker,machineGroup,opt_target='CPU'):
     '''
     具体装配方案三,结合物理机M/U权重 与预测结果中总M比总Us权重 贪心方法,
-
+    不考虑opt_target 情况下，
+    1.若bw(物理机MU权重)大于预测结果MU权重时，CPU决定最小物理机数，
+    采用CPU从大到小并且权重（内存数）从大到小的贪心分配方案，
+    这样单体物理机的CPU利用率可接近极限的100%，内存利用率可接近极限的
+    vm_mem_size/pm_size*M
+    
+    2.若bw小于预测结果MU权重时，MEM决定最小物理机数，
+    采用权重从大到小并且CPU数从大到小的贪心分配方案，
+    这样单体物理机的MEM利用率可接近极限的100%，CPU利用率可接近极限的
+    all_vm_cpu_size/pm_size*C
+    
     若一个物理机中无法装载着，开新的物理机，依次遍历物理机放置法。
     vmPicker:
     machineGroup:
@@ -105,10 +116,37 @@ def pack_model3(vmPicker,machineGroup,opt_target='CPU'):
     vm_orders = [[], # vm_type
                  []] # cot
     weightes = [1,2,4];
-
-    start=2;end=-1;step=-1;order=1;
-    for wi in range(start,end,step):
-        tmp = vmPicker.get_vm_by_mu_weight(weightes[wi],order);
+    cpu = [1,2,4,8,16];
+    
+    vm_cpu_size,vm_mem_size = vmPicker.origin_cpu_mem_sum();
+    
+    if vm_cpu_size == 0: return ; # 无需装装配， 结束
+    
+    pw =   vm_mem_size*1.0 / vm_cpu_size;
+    
+    C = machineGroup.machine_info['CPU'];# 物理机CPU数
+    M = machineGroup.machine_info['MEM'];# 物理机MEM数
+    bw = M * 1.0 / C;# 物理机权重
+    
+#######################################
+    print 'pw=%.2f,bw=%.2f'%(pw,bw);
+    num = max(vm_cpu_size*1.0/C,vm_mem_size*1.0/M);
+    print 'num=%d'%(ceil(num));
+    
+    print 'cpu%%=%.2f mem%%=%.2f'%(vm_cpu_size*100.0/(num*C),
+                                   vm_mem_size*100.0/(num*M));
+#######################################    
+    
+    if bw >= pw: # 由CPU数决定最小物理机，采用方案一
+        pick_func = vmPicker.get_vm_by_cpu;
+        dirt = cpu;
+    else:        # 由MEM数决定最小物理机，采用方案二
+        pick_func = vmPicker.get_vm_by_mu_weight;
+        dirt = weightes;
+        
+    start=len(dirt)-1;end=-1;step=-1;order=1;    
+    for i in range(start,end,step):
+        tmp = pick_func(dirt[i],order);
         if tmp != None:
             vm_orders[0].extend(tmp[0]);
             vm_orders[1].extend(tmp[1]);
