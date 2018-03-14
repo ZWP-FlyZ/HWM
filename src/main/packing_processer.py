@@ -172,6 +172,12 @@ class VmPicker():
     # 虚拟机总数，非零虚拟机总数
     vm_size = 0;
     
+    # 虚拟机中cpu总数
+    vm_cpu_size = 0;
+
+    # 虚拟机中mem总数
+    vm_mem_size = 0;
+    
     # 预测虚拟机的在M/U权重与核心数级别
     # 上展开 shape=[3,5]
     #   CPU=1,2,4,8,16
@@ -196,8 +202,11 @@ class VmPicker():
         for vmtype in types:
             vsum = 0;
             pre  =  predict_result[vmtype];
+            vm_cpu,vm_mem,_ = ParamInfo.VM_PARAM[vmtype];
             for i in range(len(pre)):
                 vsum+=pre[i];
+            self.vm_cpu_size+=vm_cpu*vsum;
+            self.vm_mem_size+=vm_mem*vsum;
             windex,cindex = self.type2index(vmtype);
             self.VM[windex][cindex] = vsum;
         pass;
@@ -311,6 +320,9 @@ class VmPicker():
             return None;        
         return result;    
     
+    
+    def origin_cpu_mem_sum(self):
+        return self.vm_cpu_size,self.vm_mem_size;
     
     
     def to_origin_desc(self):
