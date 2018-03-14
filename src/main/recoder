@@ -19,7 +19,8 @@
 
 记录7：predict3效果比predict2略差一点，大概1～2左右
 
-记录8：packing3 最终得分为71,效果并不理想
+记录8：packing3 结果同其他packing 一样，瓶颈在prediction
+
 
 
 
