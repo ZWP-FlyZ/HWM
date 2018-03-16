@@ -175,7 +175,7 @@ class CaseInfo(object):
     def get_his_data_by_vmtype_avage(self,vmtype,toInt=0):
         '''
         返回一个从第一个数据时间到预测开始前的数据统计列表
-        使用前后最近平均值填补空缺,若无一段的值 用最近有效值填补
+        使用前后最近平均值填补空缺,若后一段的无法平均值 用最近有效值填补
         ['time':[时间标签],
         'value':[值]]
         '''
@@ -217,7 +217,55 @@ class CaseInfo(object):
             
         return result;        
         
-        
+    def get_his_data_by_vmtype_avage_v2(self,vmtype,toInt=0):
+        '''
+        返回一个从第一个数据时间到预测开始前的数据统计列表
+        使用前后最近平均值填补空缺,若后一段的无法平均值 
+        用最近前一个星期前数据替代，无法替代则使用最后一个
+        ['time':[时间标签],
+        'value':[值]]
+        '''
+        tdict = self.his_data[vmtype];
+        tkeys = tdict.keys();
+        tkeys.sort();
+        kno_len = len(tkeys);
+        kno_s = 0;
+        kno_e = 0;
+        kno_s_value = tdict[tkeys[0]];
+        kno_e_value = kno_s_value;
+           
+        result = {'time':[], # 时间标签
+                  'value':[]};# 统计值
+        hrs = 1;
+        if self.time_grain == ParamInfo.TIME_GRAIN_DAY:
+            hrs = 24;
+        td = timedelta(hours=hrs);
+        st = datetime.strptime(tkeys[0],'%Y-%m-%d %H:%M:%S');
+        et = datetime.strptime(self.data_range[0],'%Y-%m-%d %H:%M:%S');
+
+        while st<et:
+            timestr = st.strftime('%Y-%m-%d %H:%M:%S');
+            result['time'].append(timestr);
+            if kno_e<0:
+                vset = result['value'];
+                if len(vset)>=7:
+                    vset.append(vset[-7]);
+                else:
+                    result['value'].append(self.toInt(kno_s_value, toInt));
+            elif timestr == tkeys[kno_e]:
+                kno_s_value = kno_e_value;
+                result['value'].append(self.toInt(kno_s_value, toInt));
+                kno_e+=1;
+                if kno_e==kno_len:
+                    kno_e=-1;
+                kno_e_value = tdict[tkeys[kno_e]];
+            else:
+                kno_s_value = (kno_s_value+kno_e_value)/2.0;
+                result['value'].append(self.toInt(kno_s_value, toInt));
+            st = st+td;
+            kno_s+=1;
+            
+        return result;        
         
         pass;          
 
