@@ -217,30 +217,81 @@ def predict_model6(his_data,# 某种类型的虚拟机的历史数据
     
     
     n =  7; # 历史长度
-    sigma = 0.4;
+    sigma = 0.01;
     
     n_layer1 = 2;
     chis_data = copy.deepcopy(his_data['value']);
+    cal_len = len(chis_data);
     avag = [];
+    tmp=0.0;
+    last=0.0;
     for i in range(n_layer1):
-        pass;
-    
+        last = chis_data[i]*1.0/n_layer1;
+        tmp += last;
+    avag.append(tmp);    
+    for i in range(n_layer1,cal_len):
+        tmp-= last;
+        last = chis_data[i]*1.0/n_layer1;
+        tmp += last;
+        avag.append(tmp);
+
     
     result = [];
     for rept in range(date_range_size):
-        cal_len = len(chis_data);
+        cal_len = len(avag);
         tmpn=0;
         predict=0.0;
         for i in range(cal_len-1,-1,-1):
-            predict+= chis_data[i];
+            predict+= avag[i];
             tmpn+=1;
             if tmpn==n:break;
         noise = random.gauss(0,sigma);
         predict = int(math.ceil(predict*1.0/tmpn+noise));
-        chis_data.append(predict);
+        avag.append(predict);
         result.append(predict);
     return result;
 
+def predict_model7(his_data,# 某种类型的虚拟机的历史数据
+                   date_range_size):# 需要预测的长度
+
+    '''
+    预测方案七,对若干星期前同一天数据求平均
+    his_data:['time':[时间标签],'value':[值]]
+    '''
+    
+    
+    n =  2; # 星期周围数
+    sigma = 0.000001;
+    
+    back_week = 4;
+    chis_data = copy.deepcopy(his_data['value']);
+    cal_len = len(chis_data);
+
+    result = [];
+    for rept in range(date_range_size):
+        day_avage=0.0;
+        cot=0;
+        for i in range(1,back_week+1):
+            index = i*7;
+            if index<=cal_len:
+                cot+=1;
+                day_avage+=chis_data[-index];
+                for j in range(1,n+1):
+                    day_avage+=chis_data[-index+j];
+                    cot+=1;
+                    if index+j <= cal_len:
+                        day_avage+=chis_data[-index-j];
+                        cot+=1;
+                    else:continue;
+            else:break;
+        day_avage = day_avage*1.0 / cot; # 注意报错
+        
+        noise = random.gauss(0,sigma);
+        day_avage = int(math.ceil(day_avage+noise));
+        chis_data.append(day_avage);        
+        result.append(day_avage);    
+
+    return result;
 
 
 

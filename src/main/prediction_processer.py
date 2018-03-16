@@ -13,7 +13,7 @@ Created on 2018年3月10日
 
 import predict_model;
 
-predict_func = predict_model.predict_model2;
+predict_func = predict_model.predict_model7;
 
 def predict_all(caseInfo):
     '''
