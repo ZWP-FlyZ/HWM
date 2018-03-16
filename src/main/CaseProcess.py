@@ -6,6 +6,7 @@ Created on 2018年3月10日
 '''
 from datetime import timedelta;
 from datetime import datetime;
+import math;
 
 import ParamInfo; 
 
@@ -132,12 +133,14 @@ class CaseInfo(object):
     def get_his_data_by_vmtype(self,vmtype):
         '''
         返回一个从第一个数据时间到预测开始前的数据统计列表
+        使用0填补空缺值
         ['time':[时间标签],
         'value':[值]]
         '''
         tdict = self.his_data[vmtype];
         tkeys = tdict.keys();
         tkeys.sort();
+
         result = {'time':[], # 时间标签
                   'value':[]};# 统计值
         hrs = 1;
@@ -155,10 +158,64 @@ class CaseInfo(object):
             else:
                 result['value'].append(0);
             st = st+td;
+
             
         return result;    
-        
-        
+
+    def toInt(self,value,tType=0):
+            if tType==0.0:
+                return value;
+            elif tType==1.0:
+                return math.ceil(value);
+            elif tType==-1.0:
+                return math.floor(value);
+            elif tType==0.5:
+                return round(value);
+            
+    def get_his_data_by_vmtype_avage(self,vmtype,toInt=0):
+        '''
+        返回一个从第一个数据时间到预测开始前的数据统计列表
+        使用前后最近平均值填补空缺,若无一段的值 用最近有效值填补
+        ['time':[时间标签],
+        'value':[值]]
+        '''
+        tdict = self.his_data[vmtype];
+        tkeys = tdict.keys();
+        tkeys.sort();
+        kno_len = len(tkeys);
+        kno_s = 0;
+        kno_e = 0;
+        kno_s_value = tdict[tkeys[0]];
+        kno_e_value = kno_s_value;
+           
+        result = {'time':[], # 时间标签
+                  'value':[]};# 统计值
+        hrs = 1;
+        if self.time_grain == ParamInfo.TIME_GRAIN_DAY:
+            hrs = 24;
+        td = timedelta(hours=hrs);
+        st = datetime.strptime(tkeys[0],'%Y-%m-%d %H:%M:%S');
+        et = datetime.strptime(self.data_range[0],'%Y-%m-%d %H:%M:%S');
+
+        while st<et:
+            timestr = st.strftime('%Y-%m-%d %H:%M:%S');
+            result['time'].append(timestr);
+            if kno_e<0:
+                result['value'].append(self.toInt(kno_s_value, toInt));
+            elif timestr == tkeys[kno_e]:
+                kno_s_value = kno_e_value;
+                result['value'].append(self.toInt(kno_s_value, toInt));
+                kno_e+=1;
+                if kno_e==kno_len:
+                    kno_e=-1;
+                kno_e_value = tdict[tkeys[kno_e]];
+            else:
+                kno_s_value = (kno_s_value+kno_e_value)/2.0;
+                result['value'].append(self.toInt(kno_s_value, toInt));
+            st = st+td;
+            kno_s+=1;
+            
+        return result;        
         
         
         

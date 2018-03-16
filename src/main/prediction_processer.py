@@ -13,7 +13,7 @@ Created on 2018年3月10日
 
 import predict_model;
 
-predict_func = predict_model.predict_model3;
+predict_func = predict_model.predict_model2;
 
 def predict_all(caseInfo):
     '''
@@ -34,7 +34,7 @@ def predict_one(vm_type,# 虚拟机类型
                 caseInfo,# 案例信息对象
                 prodict_function=None# 时间序列预测
                 ):
-    return prodict_function(caseInfo.get_his_data_by_vmtype(vm_type),
+    return prodict_function(caseInfo.get_his_data_by_vmtype_avage(vm_type),
                             caseInfo.date_range_size);
     '''
     训练并预测一种虚拟机的类型，返回为
