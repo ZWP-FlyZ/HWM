@@ -35,6 +35,6 @@
 
 记录15：在记录12中 在model中使用floor效果比ceil差
 
-记录16：
+记录16：使用predict7 在back_week=2 n=3 时出现好结果83.1 
 
 

@@ -8,6 +8,7 @@ Created on 2018年3月13日
 import copy;
 import math;
 import random;
+import prediction_processer;
 
 
 def predict_model1(his_data,# 某种类型的虚拟机的历史数据
@@ -260,8 +261,8 @@ def predict_model7(his_data,# 某种类型的虚拟机的历史数据
     '''
     
     
-    n =  2; # 星期周围数
-    sigma = 0.000001;
+    n =  2; # 边长数
+    sigma = 0.0001;
     
     back_week = 4;
     chis_data = copy.deepcopy(his_data['value']);
@@ -270,21 +271,24 @@ def predict_model7(his_data,# 某种类型的虚拟机的历史数据
     result = [];
     for rept in range(date_range_size):
         day_avage=0.0;
-        cot=0;
+        cot_week=0;
         for i in range(1,back_week+1):
             index = i*7;
             if index<=cal_len:
-                cot+=1;
-                day_avage+=chis_data[-index];
-                for j in range(1,n+1):
-                    day_avage+=chis_data[-index+j];
-                    cot+=1;
+                day_tmp=chis_data[-index]*n;
+                cot_day=n;
+                cot_week+=1;
+                for j in range(1,n):
+                    tmp = (n-j)/2.0;
+                    day_tmp+=chis_data[-index+j]*tmp;
+                    cot_day+=tmp;
                     if index+j <= cal_len:
-                        day_avage+=chis_data[-index-j];
-                        cot+=1;
+                        day_tmp+=chis_data[-index-j]*tmp;
+                        cot_day+=tmp;
                     else:continue;
+                day_avage+=day_tmp/cot_day;
             else:break;
-        day_avage = day_avage*1.0 / cot; # 注意报错
+        day_avage = day_avage*1.0 / cot_week;  # 注意报错
         
         noise = random.gauss(0,sigma);
         day_avage = int(math.ceil(day_avage+noise));
@@ -293,8 +297,10 @@ def predict_model7(his_data,# 某种类型的虚拟机的历史数据
 
     return result;
 
+#########################################
 
-
-
+#选择预测方案
+used_func = predict_model7;
+#########################################
 
 
