@@ -80,19 +80,37 @@ class MachineGroup():
         self.new_physic_machine();
         pass;
 
-    def new_physic_machine(self):
+    def new_physic_machine(self,num=1):
         '''
-        创建一个新的物理机，返回物理机数量
+        创建num个新的物理机，返回物理机数量
         '''
-        self.pm_size+=1;
-        npm = {
-            're_cpu':self.machine_info['CPU'],
-            're_mem':self.machine_info['MEM'],
-            'vm_size':0
-            };
-        self.PM_status.append(npm);
-        self.PM.append({});
+        while num>0:
+            self.pm_size+=1;
+            npm = {
+                're_cpu':self.machine_info['CPU'],
+                're_mem':self.machine_info['MEM'],
+                'vm_size':0
+                };
+            self.PM_status.append(npm);
+            self.PM.append({});
+            num-=1;
         return self.pm_size;
+    
+    def test_put_vm(self,pm_id,vm_type):
+        '''
+        测试能否放置虚拟机
+        '''
+        if pm_id is None or \
+        pm_id<0 or pm_id>=self.pm_size:
+            raise ValueError('error pm_id=',pm_id);
+        vm_cpu,vm_mem = ParamInfo.VM_PARAM[vm_type][:2];
+        pmstatus = self.PM_status[pm_id];
+        re_cpu = pmstatus['re_cpu']-vm_cpu;
+        re_mem = pmstatus['re_mem']-vm_mem;
+        if re_cpu>=0 and  re_mem>=0:
+            return (True,[re_cpu,re_mem]);
+        else:
+            return (False,[re_cpu,re_mem]);
 
     def put_vm(self,pm_id,vm_type):
         '''

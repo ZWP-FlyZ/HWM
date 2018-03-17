@@ -8,7 +8,6 @@ Created on 2018年3月13日
 import copy;
 import math;
 import random;
-import prediction_processer;
 
 
 def predict_model1(his_data,# 某种类型的虚拟机的历史数据
@@ -49,7 +48,7 @@ def predict_model2(his_data,# 某种类型的虚拟机的历史数据
     历史长度为n个粒度时间，权重设定暂定，
     his_data:['time':[时间标签],'value':[值]]
     '''
-    n =  7; # 历史长度
+    n =  14; # 历史长度
     # 权重，从最近到最久，长度为n
  
     chis_data = copy.deepcopy(his_data['value']);
@@ -300,7 +299,7 @@ def predict_model7(his_data,# 某种类型的虚拟机的历史数据
 #########################################
 
 #选择预测方案
-used_func = predict_model7;
+used_func = predict_model2;
 #########################################
 
 
