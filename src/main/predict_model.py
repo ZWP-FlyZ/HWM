@@ -210,16 +210,17 @@ def predict_model6(his_data,# 某种类型的虚拟机的历史数据
                    date_range_size):# 需要预测的长度
 
     '''
-    预测方案六,使用SMV模型预测，添加正态随机噪声 全部数据  
+    预测方案六,使用SMV模型预测，添加正态随机噪声 
+    先将数据进行一次平均处理，然后采用平均预测 
     历史长度为n个粒度时间，权重设定暂定，
     his_data:['time':[时间标签],'value':[值]]
     '''
     
     
     n =  7; # 历史长度
-    sigma = 0.01;
+    sigma = 0.1;
     
-    n_layer1 = 2;
+    n_layer1 = 1;
     chis_data = copy.deepcopy(his_data['value']);
     cal_len = len(chis_data);
     avag = [];
@@ -260,10 +261,10 @@ def predict_model7(his_data,# 某种类型的虚拟机的历史数据
     '''
     
     
-    n =  2; # 边长数
-    sigma = 0.0001;
+    n =  3; # 边长数
+    sigma = 0.5;
     
-    back_week = 4;
+    back_week = 2;
     chis_data = copy.deepcopy(his_data['value']);
     cal_len = len(chis_data);
 
@@ -290,6 +291,7 @@ def predict_model7(his_data,# 某种类型的虚拟机的历史数据
         day_avage = day_avage*1.0 / cot_week;  # 注意报错
         
         noise = random.gauss(0,sigma);
+        noise = math.fabs(noise);
         day_avage = int(math.ceil(day_avage+noise));
         chis_data.append(day_avage);        
         result.append(day_avage);    
@@ -299,7 +301,7 @@ def predict_model7(his_data,# 某种类型的虚拟机的历史数据
 #########################################
 
 #选择预测方案
-used_func = predict_model2;
+used_func = predict_model7;
 #########################################
 
 
